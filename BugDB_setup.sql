@@ -5,7 +5,7 @@ create table Project (
   project_name  varchar2(50)
 );
 
-drop table Project;
+--drop table Project;
 
 create table Employee (
   e_id          number(5) Primary key,
@@ -19,57 +19,59 @@ create table Employee (
 --drop table Employee;
 
 create table Story (
-  story_id        number,
-  bug_begin_line  number not null,
+  story_id        number(5) Primary Key,
+  bug_begin_line  number default 1 not null,
   bug_end_line    number
+--  bug_id          number(5) references Bug(bug_id) not null
 );
 -- drop table Story;
 --alter table Story modify bug_begin_line number (default 1) not null;
 alter table Story drop column story_id;
-alter table Story modify story_id number primary key;
+alter table Story add story_id number(5) primary key;
 
 --create database Bug_Base;
 
 create table Notes (
-  story_id  number references Story(story_id) unique,
+  story_id  number references Story(story_id) not null,
   note      varchar2(2500)
 );
 drop table communications;
+drop table notes;
+drop table commit_log;
 
 
 create table Commit_Log (
-  story_id    number references Story(story_id) unique,
+  story_id    number references Story(story_id) not null,
   bug_commit  varchar2(50)
 );
 
 create table Communications (
-  story_id  number references Story(story_id) unique,
+  story_id  number references Story(story_id) not null,
   comm_log  varchar2(500)
 );
 
 --drop table Story;
 
 create table Bug (
-  bug_id    number(5) Primary key,
-  found     date not null,
-  resolved  date,
-  parent    number(5), 
-  story_id  number references Story(story_id) unique,
-  priority number(2) check (priority > 0 and priority <= 10),
-  difficulty number(1) check (difficulty > 0 and difficulty <= 5),
-  constraint date_check  check (found < resolved)
+  bug_id        number(5) Primary key,
+  found         date not null,
+  resolved      date, 
+  story_id      number(5) references Story(story_id) not null,
+  priority      number(2) check (priority > 0 and priority <= 10),
+  difficulty    number(1) check (difficulty > 0 and difficulty <= 5),
+  constraint    date_check  check (found <= resolved or resolved is null)
 );
 -- parent bug be existing bug
 drop table Bug;
 alter table Bug drop column story_id;
-alter table Bug add story_id number(5) references Story(story_id) unique;
-
+alter table Bug add story_id number(5) references Story(story_id) not null;
+--alter table Bug add priority number(2) check (priority > 0 and priority <= 10);
 create table Bug_Spawn (
-  parent_id   number(5),
+  parent_id   number(5) references Bug(bug_id),
   child_id    number(5) primary key references Bug(bug_id)
 );
 
---drop table Bug_Spawn;
+drop table Bug_Spawn;
 --alter table Bug_Spawn drop column parent_id;
 
 create table Works (
@@ -82,15 +84,18 @@ create table Works (
 
 create table Handles (
   bug         number(5) references Bug(bug_id),
-  project_id  number(5) references Project(p_id),
-  constraint handle_pk primary key(project_id)
+  project_id  number(5) references Project(p_id) not null,
+  constraint handle_pk primary key(bug, project_id)
 );
+
+drop table Handles;
 
 create table Writes (
-  e_id number(5) references Employee(e_id),
-  story_id number(5) references Story(story_id)
+  e_id number(5) references Employee(e_id) not null,
+  story_id number(5) references Story(story_id) not null,
+  constraint write_pk primary key(e_id, story_id)
 );
-
+drop table writes;
 
 -- Sequences for various Pks
 create sequence project_id_seq
@@ -114,5 +119,6 @@ create sequence story_id_seq
   increment by  10;
 
 
+-- drop em
 
 

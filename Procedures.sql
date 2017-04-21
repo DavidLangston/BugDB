@@ -14,67 +14,60 @@ create or replace procedure AddHours (
     where e_id = emp and pro_id = proj;
   end AddHours;
   /
-  
+
+
+create or replace procedure AddEmpToProject (
+  emp in employee.e_id%type, proj in project.p_id%type)
+  is
+  begin
+    insert into works (e_id, pro_id) values (emp, proj);
+end;
+/
 -- when remove bug remove from handles
 --create or replace trigger bug_handle_remove (
   
 --)
 
+ALTER SESSION SET PLSCOPE_SETTINGS = 'IDENTIFIERS:NONE';
 create or replace trigger bug_handle_add
-after insert or update of parent on Bug
-for each row begin
-if inserting
-then
-insert into bug_spawn (parent_id, child_id) values (:new.parent, :new.bug_id);
-end if;
-if updating
-then
-insert into bug_spawn (parent_id, child_id) values (:new.parent, :new.bug_id);
-end if;
+after insert on Bug
+for each row
+declare
+begin
+insert into bug_spawn values (null, :new.bug_id);
 end;
 /
+ALTER SESSION SET PLSCOPE_SETTINGS = 'IDENTIFIERS:ALL'; 
+
+
+--drop trigger bug_handle_add;
 -- can find all children without parents.
 -- deleting bugs in bug spawn
+ALTER SESSION SET PLSCOPE_SETTINGS = 'IDENTIFIERS:NONE';
 create or replace trigger bug_handle_delete
 after delete on Bug
 for each row begin
-delete from bug_spawn where parent_id = :new.parent or child_id = :new.bug_id;
+delete from bug_spawn where child_id = :new.bug_id;
 end;
 /
-
+ALTER SESSION SET PLSCOPE_SETTINGS = 'IDENTIFIERS:ALL';
 
 
 drop trigger bug_handle_delete;
 
-create or replace trigger bug_parent_remove_children
-before delete on Bug
-begin
-  for someRow in (select parent
-                  from Bug
-                  where parent = bug_id)
-  loop
-    update Bug 
-    set parent = null
-    where parent = someRow.parent;
-  end loop;
-end;
-/
-drop trigger bug_parent_remove_children;
-
 create or replace trigger bug_make_story
-after insert on Bug
+before insert on Bug
 for each row begin
 if inserting 
 then
-insert into Story values (:new.story_id, 1, null);
+--insert into Bug_Spawn values (1, :new.bug_id);
+insert into Story values (1, null, :new.story_id);
 insert into Notes values (:new.story_id, null);
 insert into Commit_Log values (:new.story_id, null);
 insert into Communications values (:new.story_id, null);
 end if;
 end;
 /
-
-
-
+drop trigger bug_make_story;
 
 
