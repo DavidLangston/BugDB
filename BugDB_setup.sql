@@ -2,7 +2,7 @@
 
 create table Project (
   p_id          number(5) Primary key,
-  project_name  varchar2(50)
+  project_name  varchar2(50) unique
 );
 
 --drop table Project;
@@ -77,10 +77,10 @@ drop table Bug_Spawn;
 create table Works (
   e_id number references Employee(e_id),
   pro_id number references Project(p_id),
-  hours number(4),
+  hours number(4) default 0 not null,
   constraint work_pk primary key(e_id, pro_id)
 );
-
+drop table works;
 
 create table Handles (
   bug         number(5) references Bug(bug_id),

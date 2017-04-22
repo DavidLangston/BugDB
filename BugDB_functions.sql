@@ -57,7 +57,70 @@ truncate table bug;
 --insert into handles values ()
 --insert into bug_spawn values (null, 40);
 drop table bug_spawn;
+exec AddEmpToProject(1040, 1000);
+exec addhours(1040, 1000, 3);
+exec AddEmpToProject(1040, 1010);
+exec addhours(1040, 1010, 6);
+exec AddEmpToProject(1040, 1020);
+exec addhours(1040, 1020, 7);
+exec AddEmpToProject(1040, 1030);
+exec addhours(1040, 1030, 4);
+exec AddEmpToProject(1040, 1040);
+exec AddEmpToProject(1040, 1050);
+exec addhours(1040, 1050, 18);
+--delete from works;
+exec AddEmpToProject(1001, 1000);
+exec addhours(1001, 1000, 8);
+exec AddEmpToProject(1002, 1010);
+exec addhours(1002, 1010, 32);
+exec AddEmpToProject(1003, 1020);
+exec addhours(1003, 1020, 16);
+exec AddEmpToProject(1004, 1030);
+exec addhours(1004, 1030, 14);
+exec AddEmpToProject(1005, 1040);
+exec addhours(1005, 1040, 25);
+exec AddEmpToProject(1006, 1050);
+exec addhours(1006, 1050, 12);
+exec AddEmpToProject(1007, 1000);
+exec addhours(1007, 1000, 5);
+exec AddEmpToProject(1008, 1010);
+exec addhours(1008, 1010, 16);
+exec AddEmpToProject(1009, 1020);
+exec addhours(1009, 1020, 44);
+exec AddEmpToProject(1010, 1030);
+exec addhours(1010, 1030, 14);
+exec AddEmpToProject(1010, 1040);
+exec addhours(1010, 1040, 12);
+exec AddEmpToProject(1006, 1040);
+exec addhours(1006, 1040, 13);
+exec AddEmpToProject(1001, 1040);
+exec AddEmpToProject(1001, 1010);
+exec AddEmpToProject(1001, 1020);
+exec AddEmpToProject(1001, 1030);
+--truncate table works;
+--truncate table writes;
 
+exec set_bug_to_project(73, 1000);
+exec set_bug_to_project(74, 1010);
+exec set_bug_to_project(75, 1020);
+exec set_bug_to_project(76, 1030);
+exec set_bug_to_project(77, 1040);
+exec set_bug_to_project(78, 1050);
+exec set_bug_to_project(79, 1040);
+exec set_bug_to_project(80, 1040);
+exec set_bug_to_project(81, 1040);
+exec set_bug_to_project(82, 1020);
+exec set_bug_to_project(83, 1010);
+
+
+exec addnotetostory(770, 'found this little sucker, looks like hes gonna be trouble');
+exec addnotetostory(770, 'tried to fix with constraint check, no go!');
+truncate table notes;
+truncate table commit_log;
+truncate table communications;
+
+delete from employee where E_ID = 1020;
+--delete from works;
 -- create bug then add to HANDLES for a given project_id
 
 
